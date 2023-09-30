@@ -94,3 +94,4 @@ class Vacancy(HeadHunterAPI, Input_error):
             "Требование:": self.vacancy_requirement,
             "Обязанности:": self.vacancy_responsibility
         }
+

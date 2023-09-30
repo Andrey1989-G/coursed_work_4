@@ -50,3 +50,4 @@ class WorkWithJson(JSONSaver):
                         if i["id вакансии:"] == id_vacancy_i or i["id вакансии:"] == id_vacancy_j:
                             salary.append(i["Заработная плата:"])
                 return salary
+

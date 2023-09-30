@@ -23,3 +23,4 @@ class JSONSaver(ABC):
     @abstractmethod
     def delete_vacancy(self, vacancy):
         pass
+
