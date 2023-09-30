@@ -18,7 +18,7 @@ def slice_data(data: list, count_id: int = 5):
                 break
     return list(reversed(res))
 
-# print(slice_data(load_data()))
+print(slice_data(load_data()))
 
 def magic_with_N_card(s: str = "MasterCard 7158300734726758"):
     """Получает строку с цифрами номера карты, вставляет в середину
