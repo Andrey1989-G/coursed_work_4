@@ -6,8 +6,7 @@ from classes.abstract_class import JSONSaver
 
 class WorkWithJson(JSONSaver):
     """класс для работы с json файлом"""
-
-    file_path = '/vacancy.json'
+    file_path = 'data/vacancy.json'
 
     def add_vacancy(self, id_vacancy):
         """добавление по id в json файл"""
@@ -15,8 +14,7 @@ class WorkWithJson(JSONSaver):
             with open(self.file_path, 'r', encoding='utf-8') as file:
                 existing_data = json.load(file)
                 existing_data.extend(id_vacancy)
-            with open(self.file_path, 'r+',
-                      encoding='utf-8') as file_add:
+            with open(self.file_path, 'r+', encoding='utf-8') as file_add:
                 json.dump(existing_data, file_add, ensure_ascii=False, indent=4)
                 return
         else:

@@ -44,9 +44,7 @@ class Vacancy(HeadHunterAPI, Input_error):
             print(s.message)
 
     def sorted_vacancy(self):
-        """
-        Метод сортировки информации из api hh в универсальный
-         """
+        """Метод сортировки информации из api"""
         data = self.get_vacancies(self.keyword)
         sorted_vacancy = []
         for item in data['items']:
@@ -67,7 +65,6 @@ class Vacancy(HeadHunterAPI, Input_error):
 
     def sort_by(self, info, per_page):
         """сортировка вакансий"""
-
         self.per_page = per_page
         self.info = info
         sorted_vacancy = self.sorted_vacancy()
