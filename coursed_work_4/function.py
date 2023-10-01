@@ -1,13 +1,13 @@
 from classes.get_from_hhru import Vacancy
 from classes.get_from_superjob import VacancySuperJob
-from classes.work_with_json import WorkWithJson
+from classes.work_with_json import WorkWithJson, JsonApi, Vacancy_local
 
 from classes.input_error import Input_error
 
 
 def start_with_user():
     """Начало работы, приветствие и выбор сайта для поиска"""
-    site = ["HeadHunter", "SuperJob", "Местная БД"]
+    site = ["HeadHunter", "SuperJob", "Избранное"]
     choоse_platforms = input("Здравствуйте, выберите сайт для поиска вакансий:\n"
                             f"1- {site[0]}\n"
                             f"2- {site[1]}\n"
@@ -23,8 +23,9 @@ def start_with_user():
         return superjob_api
     elif choоse_platforms == "3":
         print(f"Выбранная платформа - {site[2]}")
-        file_json = WorkWithJson()
-        return file_json.get_vacancies()
+        file_json = Vacancy_local()
+        print(file_json.get_all_vacancies_in_file())
+        start_with_user()
     elif choоse_platforms == "4":
         print("До свидания")
         return None
@@ -65,7 +66,6 @@ def find_vacancy():
 
 def main():
     """Вывод найденных вакансий и дальнейшие действия с ними"""
-
     try:
         vacancy_sort = find_vacancy()
         if vacancy_sort is not None:
@@ -147,9 +147,10 @@ def del_vacancy():
 
 def full_info():
     """Получение информации о вакансии из файла"""
+    vacancies_all = JsonApi()
     vacancies_from = WorkWithJson()
     print(f"Список вакансий в местной БД:\n"
-          f"{vacancies_from.get_vacancy()}")
+          f"{vacancies_all.get_all_vacancies_in_file()}")
     id_vacancy = int(input("id вакансии: "))
     if isinstance(id_vacancy, int):
         print(f"Информация о вакансии с id {id_vacancy}: ")

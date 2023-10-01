@@ -9,12 +9,6 @@ class WorkWithJson(JSONSaver):
     """класс для работы с json файлом"""
     file_path = 'data/vacancy.json'
 
-    def get_vacancies(self):
-        """получение информации из файла"""
-        with open(self.file_path, 'r', encoding='utf-8') as file:
-            s = json.load(file)
-            return s
-
     def add_vacancy(self, id_vacancy):
         """добавление по id в json файл"""
         if os.path.isfile(self.file_path) and os.path.getsize(self.file_path) > 0:
@@ -56,68 +50,86 @@ class WorkWithJson(JSONSaver):
                             salary.append(i["Заработная плата:"])
                 return salary
 
-# class Vacancy_local(WorkWithJson,Input_error):
-#     """методы работы с вакансиями"""
-#
-#     def __init__(self, vacancy_id=None, vacancy_name=None, vacancy_url=None,
-#                  vacancy_salary=None, vacancy_city=None, vacancy_requirement=None,
-#                  vacancy_responsibility=None):
-#         try:
-#             self.vacancy_id = vacancy_id
-#             self.vacancy_name = vacancy_name
-#             self.vacancy_url = vacancy_url
-#             self.vacancy_salary = vacancy_salary
-#             self.vacancy_city = vacancy_city
-#             self.vacancy_requirement = vacancy_requirement
-#             self.vacancy_responsibility = vacancy_responsibility
-#         except Input_error as s:
-#             print(s.message)
-#
-#     def sorted_vacancy(self):
-#         """Метод сортировки информации из api"""
-#         data = self.get_vacancies(self.keyword)
-#         sorted_vacancy = []
-#         for item in data['items']:
-#             salary = item['salary']
-#             salary_range = f"{salary['from']}-{salary['to']}, валюта {salary['currency']}" if salary and salary[
-#                 'from'] and salary['to'] else "Не указано"
-#             vacancy = {
-#                 "id вакансии": int(item['id']),
-#                 "Название": item['name'],
-#                 "Заработная плата": salary_range,
-#                 "Город": item["area"]["name"],
-#                 "Требование": item['snippet']['requirement'],
-#                 "Обязанности": item['snippet']['responsibility'],
-#                 "cсылка": item['url']
-#             }
-#             sorted_vacancy.append(vacancy)
-#         return sorted_vacancy
-#
-#     def sort_by(self, info, per_page):
-#         """сортировка вакансий"""
-#         self.per_page = per_page
-#         self.info = info
-#         sorted_vacancy = self.sorted_vacancy()
-#         if sorted_vacancy:
-#             sorted_by_city = []
-#             for i in sorted_vacancy:
-#                 if self.info is not None and self.info in i['Город']:
-#                     sorted_by_city.append(i)
-#                 else:
-#                     sorted_vacancy.sort(key=lambda i: i.get(self.info, ''), reverse=True)
-#             else:
-#                 return sorted_vacancy[:self.per_page]
-#         else:
-#             raise Input_error
-#
-#     def to_dict(self):
-#         """переводим в словарь"""
-#         return {
-#             "id вакансии:": self.vacancy_id,
-#             "Название:": self.vacancy_name,
-#             "cсылка:": self.vacancy_url,
-#             "Заработная плата:": self.vacancy_salary,
-#             "Город:": self.vacancy_city,
-#             "Требование:": self.vacancy_requirement,
-#             "Обязанности:": self.vacancy_responsibility
-#         }
+class JsonApi(GetInfo):
+    """класс для получения вакансий с джейсон"""
+    file_path = 'data/vacancy.json'
+    def __init__(self):
+        self.keyword = None
+        self.per_page = None
+        self.info = None
+
+    def get_all_vacancies_in_file(self):
+        """получение информации о вакансии из файла"""
+        with open(self.file_path, 'r', encoding='utf-8') as file:
+            s = json.load(file)
+            return s
+
+    def get_vacancies(self, keyword: str):
+        pass
+
+
+class Vacancy_local(JsonApi, Input_error):
+    """методы работы с вакансиями"""
+
+    def __init__(self, vacancy_id=None, vacancy_name=None, vacancy_url=None,
+                 vacancy_salary=None, vacancy_city=None, vacancy_requirement=None,
+                 vacancy_responsibility=None):
+        try:
+            self.vacancy_id = vacancy_id
+            self.vacancy_name = vacancy_name
+            self.vacancy_url = vacancy_url
+            self.vacancy_salary = vacancy_salary
+            self.vacancy_city = vacancy_city
+            self.vacancy_requirement = vacancy_requirement
+            self.vacancy_responsibility = vacancy_responsibility
+        except Input_error as s:
+            print(s.message)
+
+    def sorted_vacancy(self):
+        """Метод сортировки информации из afqkf"""
+        data = self.get_vacancies(self.keyword)
+        sorted_vacancy = []
+        for item in data['items']:
+            salary = item['salary']
+            salary_range = f"{salary['from']}-{salary['to']}, валюта {salary['currency']}" if salary and salary[
+                'from'] and salary['to'] else "Не указано"
+            vacancy = {
+                "id вакансии": int(item['id']),
+                "Название": item['name'],
+                "Заработная плата": salary_range,
+                "Город": item["area"]["name"],
+                "Требование": item['snippet']['requirement'],
+                "Обязанности": item['snippet']['responsibility'],
+                "cсылка": item['url']
+            }
+            sorted_vacancy.append(vacancy)
+        return sorted_vacancy
+
+    def sort_by(self, info, per_page):
+        """сортировка вакансий"""
+        self.per_page = per_page
+        self.info = info
+        sorted_vacancy = self.sorted_vacancy()
+        if sorted_vacancy:
+            sorted_by_city = []
+            for i in sorted_vacancy:
+                if self.info is not None and self.info in i['Город']:
+                    sorted_by_city.append(i)
+                else:
+                    sorted_vacancy.sort(key=lambda i: i.get(self.info, ''), reverse=True)
+            else:
+                return sorted_vacancy[:self.per_page]
+        else:
+            raise Input_error
+
+    def to_dict(self):
+        """переводим в словарь"""
+        return {
+            "id вакансии:": self.vacancy_id,
+            "Название:": self.vacancy_name,
+            "cсылка:": self.vacancy_url,
+            "Заработная плата:": self.vacancy_salary,
+            "Город:": self.vacancy_city,
+            "Требование:": self.vacancy_requirement,
+            "Обязанности:": self.vacancy_responsibility
+        }
